@@ -21,7 +21,7 @@
         }
         #game-container { 
             width: 100vw; 
-            height: 100svh; /* svh ajusta a altura dinamicamente no celular */
+            height: 100svh; 
             max-width: 100%;
             max-height: 100%;
             display: flex;
@@ -41,14 +41,32 @@
 
     <script type="text/javascript">
         EJS_player = '#game';
-        EJS_core = 'snes'; // Core do SNES (snes9x)
-        EJS_gameUrl = 'Zelda-A-Link-to-the-Past.smc'; // Nome do arquivo da ROM na mesma pasta
+        EJS_core = 'snes';
+        EJS_gameUrl = 'Zelda-A-Link-to-the-Past.sfc';
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
         
-        /* Configurações para garantir o salvamento automático no celular */
-        EJS_gameName = 'Zelda-A-Link-to-the-Past'; // Identificador único do save no navegador
+        EJS_gameName = 'Zelda-A-Link-to-the-Past';
         EJS_startOnLoaded = true;
+
+        // Configurações adicionais de estabilidade
+        EJS_loadState = ''; // Evita carregar estados corrompidos automaticamente se houver falha
+        EJS_color = '#000000';
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+
+    <script>
+        // Tenta salvar o progresso caso o usuário minimize ou mude de aba
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                try {
+                    if (typeof EJS_emulator !== 'undefined' && EJS_emulator.saveState) {
+                        EJS_emulator.saveState();
+                    }
+                } catch (e) {
+                    console.log('Não foi possível salvar automaticamente ao minimizar.');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
